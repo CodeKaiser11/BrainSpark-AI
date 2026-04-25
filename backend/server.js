@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // ── Routes ──
-app.use('/api/auth', require('./routes/auth . routes . js'))
+app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/chat', require('./routes/chat.routes'))
 app.use('/api/upload', require('./routes/upload.routes'))
 app.use('/api/quiz', require('./routes/quiz.routes'))
