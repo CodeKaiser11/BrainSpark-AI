@@ -1,0 +1,98 @@
+:root {
+  /* Color Palette - Neon Library Strategy */
+  --surface: #0b1326;
+  --surface-container-low: #131b2e;
+  --surface-container: #171f33;
+  --surface-container-highest: #2d3449;
+  --surface-bright: #31394d;
+  
+  --primary: #d0bcff;
+  --primary-container: #a078ff;
+  --on-primary: #3c0091;
+  
+  --secondary: #4cd7f6;
+  --secondary-container: #03b5d3;
+  
+  --tertiary: #dbb8ff;
+  
+  --outline-variant: rgba(149, 142, 160, 0.15);
+  --foreground: #dae2fd;
+  
+  /* Typography Scale */
+  --display-lg: 3.5rem;
+  --headline-md: 2rem;
+  --body-md: 0.875rem;
+  --label-sm: 0.6875rem;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: var(--surface);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .display-font {
+  font-family: var(--font-space-grotesk), sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Glassmorphism Utility */
+.glass-panel {
+  background: rgba(160, 120, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--outline-variant);
+  border-radius: 1rem;
+}
+
+/* No-Line Rule: Tonal Shifting */
+.section-base { background: var(--surface); }
+.section-elevated { background: var(--surface-container-low); }
+.section-focused { background: var(--surface-container); }
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-container));
+  color: var(--on-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(208, 188, 255, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--outline-variant);
+  color: var(--primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(49, 57, 77, 0.1);
+}
+
+/* Tonal Glows */
+.tonal-glow {
+  box-shadow: 0 0 40px 0 rgba(208, 188, 255, 0.08);
+}
+
