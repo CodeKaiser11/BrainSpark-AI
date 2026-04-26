@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react"
+import { sendMessage } from "../api/chat"
 
 const suggestions = [
     "Explain Photosynthesis simply",
@@ -10,7 +11,7 @@ const suggestions = [
 const initialMessages = [
     {
         role: "ai",
-        text: "Hi Anjali! 👋 I'm your BrainSpark AI Tutor. Ask me anything — any subject, any topic. I'll explain it clearly!",
+        text: "Hi Anjali! 👋 I'm your BrainSpark AI Tutor powered by Gemini! Ask me anything — any subject, any topic!",
         time: "Just now",
     },
 ]
@@ -19,15 +20,16 @@ export default function ChatPage() {
     const [messages, setMessages] = useState(initialMessages)
     const [input, setInput] = useState("")
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
     const bottomRef = useRef(null)
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [messages])
 
-    const sendMessage = async (text) => {
+    const send = async (text) => {
         const msg = text || input.trim()
-        if (!msg) return
+        if (!msg || loading) return
 
         // Add user message
         setMessages((prev) => [
@@ -36,32 +38,35 @@ export default function ChatPage() {
         ])
         setInput("")
         setLoading(true)
+        setError(null)
 
-        // Simulate AI response (will connect to real API in Phase 4)
-        await new Promise((r) => setTimeout(r, 1500))
+        try {
+            // Real API call!
+            const data = await sendMessage(msg)
 
-        setMessages((prev) => [
-            ...prev,
-            {
-                role: "ai",
-                text: `Great question about "${msg}"! 🧠\n\nThis is where GPT-4 will answer you in Phase 4 when we connect the OpenAI API. For now, I'm a demo — but soon I'll give you real, detailed explanations for anything you ask!`,
-                time: "Just now",
-            },
-        ])
-        setLoading(false)
+            setMessages((prev) => [
+                ...prev,
+                { role: "ai", text: data.reply, time: "Just now" },
+            ])
+        } catch (err) {
+            setError("Something went wrong! Please try again.")
+            console.error(err)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleKey = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault()
-            sendMessage()
+            send()
         }
     }
 
     return (
         <div style={s.page}>
 
-            {/* ── Header ── */}
+            {/* Header */}
             <div style={s.header}>
                 <div style={s.headerLeft}>
                     <div style={s.aiAvatar}>🧠</div>
@@ -69,34 +74,30 @@ export default function ChatPage() {
                         <div style={s.aiName}>BrainSpark AI Tutor</div>
                         <div style={s.aiStatus}>
                             <span style={s.statusDot}></span>
-                            Online — powered by GPT-4
+                            Online — Gemini Flash 2.0
                         </div>
                     </div>
                 </div>
-                <div style={s.headerRight}>
-                    <button style={s.clearBtn}
-                        onClick={() => setMessages(initialMessages)}
-                        onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#1a1208")}
-                        onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e8e0d5")}
-                    >
-                        🗑️ Clear Chat
-                    </button>
-                </div>
+                <button style={s.clearBtn}
+                    onClick={() => setMessages(initialMessages)}
+                    onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#1a1208")}
+                    onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#e8e0d5")}
+                >
+                    🗑️ Clear Chat
+                </button>
             </div>
 
-            {/* ── Messages ── */}
+            {/* Messages */}
             <div style={s.messages}>
 
-                {/* Suggestions — show only at start */}
+                {/* Suggestions */}
                 {messages.length === 1 && (
                     <div style={s.suggestions}>
                         <div style={s.suggestLabel}>💡 Try asking:</div>
                         <div style={s.suggestGrid}>
                             {suggestions.map((s_, i) => (
-                                <button
-                                    key={i}
-                                    style={s.suggestBtn}
-                                    onClick={() => sendMessage(s_)}
+                                <button key={i} style={s.suggestBtn}
+                                    onClick={() => send(s_)}
                                     onMouseEnter={(e) => {
                                         e.currentTarget.style.borderColor = "#d4500a"
                                         e.currentTarget.style.color = "#d4500a"
@@ -113,94 +114,56 @@ export default function ChatPage() {
                     </div>
                 )}
 
-                {/* Message bubbles */}
+                {/* Message Bubbles */}
                 {messages.map((msg, i) => (
-                    <div
-                        key={i}
-                        style={{
-                            ...s.msgRow,
-                            justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-                        }}
-                    >
-                        {msg.role === "ai" && (
-                            <div style={s.msgAvatar}>🧠</div>
-                        )}
-
+                    <div key={i} style={{
+                        ...s.msgRow,
+                        justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                    }}>
+                        {msg.role === "ai" && <div style={s.msgAvatar}>🧠</div>}
                         <div style={{
                             ...s.bubble,
                             ...(msg.role === "user" ? s.userBubble : s.aiBubble),
                         }}>
-                            {msg.role === "ai" && (
-                                <div style={s.aiLabel}>✦ BrainSpark AI</div>
-                            )}
-                            <div style={s.msgText}>
-                                {msg.text.split("\n").map((line, j) => (
-                                    <span key={j}>{line}<br /></span>
-                                ))}
-                            </div>
+                            {msg.text}
                             <div style={s.msgTime}>{msg.time}</div>
                         </div>
-
-                        {msg.role === "user" && (
-                            <div style={s.userAvatar}>👩</div>
-                        )}
                     </div>
                 ))}
 
-                {/* Loading dots */}
                 {loading && (
-                    <div style={{ ...s.msgRow, justifyContent: "flex-start" }}>
+                    <div style={s.msgRow}>
                         <div style={s.msgAvatar}>🧠</div>
                         <div style={{ ...s.bubble, ...s.aiBubble }}>
-                            <div style={s.aiLabel}>✦ BrainSpark AI</div>
-                            <div style={s.typingDots}>
-                                <span style={s.dot}></span>
-                                <span style={{ ...s.dot, animationDelay: "0.2s" }}></span>
-                                <span style={{ ...s.dot, animationDelay: "0.4s" }}></span>
-                            </div>
+                            <div style={s.loadingDots}>•••</div>
                         </div>
+                    </div>
+                )}
+
+                {error && (
+                    <div style={s.errorBanner}>
+                        {error}
                     </div>
                 )}
 
                 <div ref={bottomRef} />
             </div>
 
-            {/* ── Input ── */}
+            {/* Input Area */}
             <div style={s.inputArea}>
-                <div style={s.inputBox}>
-                    <textarea
-                        style={s.textarea}
-                        placeholder="Ask anything... 'Explain Quantum Physics simply'"
+                <div style={s.inputWrapper}>
+                    <input
+                        style={s.input}
+                        placeholder="Type your question..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKey}
-                        rows={1}
-                        onFocus={(e) => (e.currentTarget.parentElement.style.borderColor = "#d4500a")}
-                        onBlur={(e) => (e.currentTarget.parentElement.style.borderColor = "#e8e0d5")}
                     />
-                    <button
-                        style={{
-                            ...s.sendBtn,
-                            background: input.trim() ? "#d4500a" : "#e8e0d5",
-                            cursor: input.trim() ? "pointer" : "default",
-                        }}
-                        onClick={() => sendMessage()}
-                        disabled={!input.trim()}
-                    >
-                        ⚡
+                    <button style={s.sendBtn} onClick={() => send()}>
+                        Send ✨
                     </button>
                 </div>
-                <div style={s.inputHint}>
-                    Press <strong>Enter</strong> to send · <strong>Shift+Enter</strong> for new line · GPT-4 connected in Phase 4
-                </div>
             </div>
-
-            <style>{`
-        @keyframes bounce {
-          0%,100%{opacity:.3;transform:translateY(0)}
-          50%{opacity:1;transform:translateY(-4px)}
-        }
-      `}</style>
         </div>
     )
 }
@@ -210,176 +173,170 @@ const s = {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "#faf7f2",
-        fontFamily: "'Bricolage Grotesque', sans-serif",
+        backgroundColor: "#fcfaf8",
+        color: "#1a1208",
+        fontFamily: "'Inter', sans-serif",
     },
-
-    /* Header */
     header: {
-        display: "flex", alignItems: "center",
-        justifyContent: "space-between",
-        padding: "18px 32px",
-        background: "#ffffff",
+        padding: "1rem 2rem",
         borderBottom: "1px solid #e8e0d5",
-        flexShrink: 0,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#fff",
     },
-    headerLeft: { display: "flex", alignItems: "center", gap: "12px" },
+    headerLeft: {
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem",
+    },
     aiAvatar: {
-        width: "42px", height: "42px",
-        background: "linear-gradient(135deg,#d4500a,#e8a020)",
+        fontSize: "1.5rem",
+        backgroundColor: "#fff5f0",
+        padding: "0.5rem",
         borderRadius: "12px",
-        display: "flex", alignItems: "center", justifyContent: "center",
+        border: "1px solid #ffccb3",
+    },
+    aiName: {
+        fontWeight: "700",
         fontSize: "1.1rem",
     },
-    aiName: { fontSize: "0.95rem", fontWeight: 700, color: "#1a1208" },
     aiStatus: {
-        fontSize: "0.72rem", color: "#22c55e",
-        display: "flex", alignItems: "center", gap: "5px",
-        marginTop: "2px",
+        fontSize: "0.85rem",
+        color: "#8a7e6e",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.4rem",
     },
     statusDot: {
-        width: "6px", height: "6px",
-        borderRadius: "50%", background: "#22c55e",
-        display: "inline-block",
-        animation: "pulse 1.5s infinite",
+        width: "8px",
+        height: "8px",
+        backgroundColor: "#22c55e",
+        borderRadius: "50%",
     },
-    headerRight: {},
     clearBtn: {
-        background: "none",
+        padding: "0.6rem 1rem",
+        borderRadius: "10px",
         border: "1px solid #e8e0d5",
-        borderRadius: "8px",
-        padding: "7px 14px",
-        fontFamily: "'Bricolage Grotesque', sans-serif",
-        fontSize: "0.8rem", fontWeight: 500,
-        color: "#8a7e6e", cursor: "pointer",
-        transition: "border-color 0.2s",
+        backgroundColor: "transparent",
+        color: "#8a7e6e",
+        cursor: "pointer",
+        fontSize: "0.9rem",
+        transition: "all 0.2s",
     },
-
-    /* Messages */
     messages: {
-        flex: 1, overflowY: "auto",
-        padding: "24px 32px",
+        flex: 1,
+        overflowY: "auto",
+        padding: "2rem",
         display: "flex",
         flexDirection: "column",
-        gap: "16px",
+        gap: "1.5rem",
     },
-
-    /* Suggestions */
-    suggestions: { marginBottom: "8px" },
+    suggestions: {
+        textAlign: "center",
+        padding: "2rem 0",
+    },
     suggestLabel: {
-        fontSize: "0.75rem", color: "#8a7e6e",
-        fontWeight: 600, marginBottom: "10px",
+        color: "#8a7e6e",
+        marginBottom: "1rem",
+        fontSize: "0.95rem",
     },
     suggestGrid: {
-        display: "flex", flexWrap: "wrap", gap: "8px",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "0.8rem",
+        justifyContent: "center",
     },
     suggestBtn: {
-        background: "#ffffff",
+        padding: "0.8rem 1.2rem",
+        borderRadius: "15px",
         border: "1px solid #e8e0d5",
-        borderRadius: "100px",
-        padding: "7px 16px",
-        fontFamily: "'Bricolage Grotesque', sans-serif",
-        fontSize: "0.8rem", fontWeight: 500,
-        color: "#8a7e6e", cursor: "pointer",
-        transition: "border-color 0.2s, color 0.2s",
+        backgroundColor: "#fff",
+        color: "#8a7e6e",
+        cursor: "pointer",
+        fontSize: "0.95rem",
+        transition: "all 0.2s",
     },
-
-    /* Bubbles */
     msgRow: {
-        display: "flex", gap: "10px", alignItems: "flex-end",
+        display: "flex",
+        gap: "0.8rem",
+        alignItems: "flex-end",
     },
     msgAvatar: {
-        width: "32px", height: "32px",
-        background: "linear-gradient(135deg,#d4500a,#e8a020)",
+        width: "32px",
+        height: "32px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff5f0",
         borderRadius: "8px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "0.85rem", flexShrink: 0,
-    },
-    userAvatar: {
-        width: "32px", height: "32px",
-        background: "#f3ede4",
-        border: "1px solid #e8e0d5",
-        borderRadius: "8px",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: "0.85rem", flexShrink: 0,
+        border: "1px solid #ffccb3",
+        fontSize: "1.1rem",
     },
     bubble: {
-        maxWidth: "65%",
-        borderRadius: "14px",
-        padding: "12px 16px",
+        maxWidth: "70%",
+        padding: "0.9rem 1.2rem",
+        borderRadius: "20px",
+        fontSize: "1rem",
+        lineHeight: "1.5",
+        position: "relative",
     },
     aiBubble: {
-        background: "#ffffff",
+        backgroundColor: "#fff",
         border: "1px solid #e8e0d5",
+        color: "#1a1208",
         borderBottomLeftRadius: "4px",
     },
     userBubble: {
-        background: "#d4500a",
-        color: "white",
+        backgroundColor: "#d4500a",
+        color: "#fff",
         borderBottomRightRadius: "4px",
     },
-    aiLabel: {
-        fontSize: "0.62rem", fontWeight: 700,
-        textTransform: "uppercase", letterSpacing: "0.8px",
-        color: "#d4500a", marginBottom: "5px",
-    },
-    msgText: {
-        fontSize: "0.88rem",
-        lineHeight: 1.65,
-        color: "inherit",
-    },
     msgTime: {
-        fontSize: "0.65rem",
-        color: "rgba(255,255,255,0.5)",
-        marginTop: "5px",
+        fontSize: "0.75rem",
+        marginTop: "0.4rem",
+        opacity: 0.7,
     },
-
-    /* Typing */
-    typingDots: {
-        display: "flex", gap: "4px", alignItems: "center",
-        padding: "4px 0",
+    loadingDots: {
+        letterSpacing: "2px",
     },
-    dot: {
-        width: "6px", height: "6px",
-        borderRadius: "50%", background: "#d4500a",
-        animation: "bounce 1.2s infinite",
-        display: "inline-block",
+    errorBanner: {
+        padding: "0.8rem",
+        backgroundColor: "#fee2e2",
+        color: "#dc2626",
+        borderRadius: "10px",
+        textAlign: "center",
+        fontSize: "0.9rem",
     },
-
-    /* Input area */
     inputArea: {
-        padding: "16px 32px 20px",
-        background: "#ffffff",
+        padding: "1.5rem 2rem",
+        backgroundColor: "#fff",
         borderTop: "1px solid #e8e0d5",
-        flexShrink: 0,
     },
-    inputBox: {
-        display: "flex", gap: "10px", alignItems: "center",
-        background: "#faf7f2",
-        border: "1.5px solid #e8e0d5",
-        borderRadius: "12px",
-        padding: "8px 8px 8px 16px",
+    inputWrapper: {
+        maxWidth: "900px",
+        margin: "0 auto",
+        display: "flex",
+        gap: "1rem",
+        alignItems: "center",
+    },
+    input: {
+        flex: 1,
+        padding: "1rem 1.5rem",
+        borderRadius: "15px",
+        border: "1px solid #e8e0d5",
+        fontSize: "1rem",
+        outline: "none",
         transition: "border-color 0.2s",
-        marginBottom: "8px",
-    },
-    textarea: {
-        flex: 1, background: "none",
-        border: "none", outline: "none",
-        fontFamily: "'Bricolage Grotesque', sans-serif",
-        fontSize: "0.9rem", color: "#1a1208",
-        resize: "none", lineHeight: 1.5,
-        maxHeight: "120px",
     },
     sendBtn: {
-        width: "38px", height: "38px",
-        border: "none", borderRadius: "8px",
-        color: "white", fontSize: "1rem",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        transition: "background 0.2s",
-        flexShrink: 0,
+        padding: "1rem 2rem",
+        borderRadius: "15px",
+        backgroundColor: "#d4500a",
+        color: "#fff",
+        border: "none",
+        fontWeight: "600",
+        cursor: "pointer",
+        transition: "transform 0.1s, background-color 0.2s",
     },
-    inputHint: {
-        fontSize: "0.7rem", color: "#8a7e6e",
-        textAlign: "center",
-    },
-}
+}

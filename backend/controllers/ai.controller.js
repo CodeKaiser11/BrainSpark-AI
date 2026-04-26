@@ -1,10 +1,7 @@
-const OpenAI = require('openai')
+const axios = require('axios')
 const Chat = require('../models/Chat.model')
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-
-// ── AI Tutor Chat ──
-// POST /api/chat
+// AI Tutor Chat — OpenRouter
 const aiChat = async (req, res) => {
     try {
         const { message, chatId, subject } = req.body
@@ -13,33 +10,38 @@ const aiChat = async (req, res) => {
             return res.status(400).json({ message: 'Message is required' })
         }
 
-        // System prompt — AI ko batao kaisa behave karna hai
         const systemPrompt = `
       You are BrainSpark AI, an intelligent and friendly study tutor.
-      Your job is to help students understand any topic clearly.
-      
-      Rules:
-      - Explain concepts simply and clearly
-      - Use examples, analogies, and real-life comparisons
-      - Break complex topics into small easy steps
+      Help students understand any topic clearly.
+      - Explain simply with examples and analogies
       - Use emojis to make explanations engaging
-      - If student asks about ${subject || 'any subject'}, explain in depth
+      - Break complex topics into small easy steps
       - Always encourage the student
-      - Keep answers focused and not too long
+      - Keep answers clear and focused
     `
 
-        // Call OpenAI GPT-4
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: message },
-            ],
-            max_tokens: 1000,
-            temperature: 0.7,
-        })
+        // OpenRouter API call
+        const response = await axios.post(
+            'https://openrouter.ai/api/v1/chat/completions',
+            {
+                model: 'google/gemini-2.0-flash-exp:free',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: message },
+                ],
+                max_tokens: 1000,
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'http://localhost:5173',
+                    'X-Title': 'BrainSpark AI',
+                },
+            }
+        )
 
-        const aiReply = completion.choices[0].message.content
+        const aiReply = response.data.choices[0].message.content
 
         // Save to DB if chatId provided
         if (chatId) {
@@ -53,41 +55,38 @@ const aiChat = async (req, res) => {
             })
         }
 
-        res.json({
-            reply: aiReply,
-            tokens: completion.usage.total_tokens,
-        })
+        res.json({ reply: aiReply })
+
     } catch (error) {
-        res.status(500).json({ message: 'AI error', error: error.message })
+        console.error('AI Error:', error.response?.data || error.message)
+        res.status(500).json({
+            message: 'AI error',
+            error: error.response?.data || error.message
+        })
     }
 }
 
-// ── Get Chat History ──
-// GET /api/chat/history
+// Get Chat History
 const getChatHistory = async (req, res) => {
     try {
         const chats = await Chat.find({ user: req.user._id })
             .sort({ updatedAt: -1 })
             .limit(20)
-
         res.json({ chats })
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message })
     }
 }
 
-// ── Create New Chat ──
-// POST /api/chat/new
+// Create New Chat
 const createChat = async (req, res) => {
     try {
         const { title, subject } = req.body
-
         const chat = await Chat.create({
             user: req.user._id,
             title: title || 'New Chat',
             subject: subject || 'General',
         })
-
         res.status(201).json({ chat })
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message })
