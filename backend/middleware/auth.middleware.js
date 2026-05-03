@@ -25,9 +25,9 @@ const protect = async (req, res, next) => {
         }
     }
 
-    if (!token) {
-        return res.status(401).json({ message: 'Not authorized — no token' })
-    }
+    // Bypass authentication for now
+    req.user = { _id: '64d61858c2f1f0a1d48c08ef', name: 'Guest User' };
+    next();
 }
 
 module.exports = { protect }

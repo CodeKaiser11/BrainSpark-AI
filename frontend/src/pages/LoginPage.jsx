@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../api/auth';
+import { login as loginApi } from '../api/auth';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await login(email, password);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      const data = await loginApi(email, password);
+      login(data.user, data.token);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -57,9 +58,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm">
-          Don't have an account? <Link to="/register" className="text-[#d4500a] font-medium hover:underline">Register</Link>
-        </p>
       </div>
     </div>
   );
