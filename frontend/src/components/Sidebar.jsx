@@ -7,6 +7,7 @@ export default function Sidebar() {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: '📊' },
     { name: 'AI Chat', path: '/chat', icon: '💬' },
+    { name: 'Profile', path: '/profile', icon: '👤' },
   ];
 
   return (

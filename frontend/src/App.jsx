@@ -9,6 +9,7 @@ import MindMaps from './pages/MindMaps';
 import NotesGenerator from './pages/NotesGenerator';
 import SmartQuizzes from './pages/SmartQuizzes';
 import YouTubePicks from './pages/YouTubePicks';
+import Profile from './pages/Profile';
 
 function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ function AppRoutes() {
       {/* Routes wrapped in Layout */}
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/snapsolve" element={<SnapSolve />} />
         <Route path="/mindmaps" element={<MindMaps />} />
         <Route path="/notes" element={<NotesGenerator />} />
