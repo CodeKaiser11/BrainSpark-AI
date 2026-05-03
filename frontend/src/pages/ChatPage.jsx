@@ -325,9 +325,10 @@ const s = {
         color: "#e8e0d5",
     },
     historyItemActive: {
-        backgroundColor: "rgba(255,255,255,0.1)",
-        color: "#fff",
-        fontWeight: "500",
+        backgroundColor: "rgba(212, 80, 10, 0.15)", // Light orange background
+        color: "#d4500a", // Orange text
+        fontWeight: "600",
+        borderRight: "3px solid #d4500a", // Orange accent border
     },
     historyTitle: {
         fontSize: "0.9rem",

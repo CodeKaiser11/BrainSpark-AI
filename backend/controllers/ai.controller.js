@@ -45,14 +45,16 @@ const aiChat = async (req, res) => {
 
         // Save to DB if chatId provided
         if (chatId) {
-            await Chat.findByIdAndUpdate(chatId, {
-                $push: {
-                    messages: [
-                        { role: 'user', content: message },
-                        { role: 'ai', content: aiReply },
-                    ],
-                },
-            })
+            const chat = await Chat.findById(chatId)
+            if (chat) {
+                // Auto-generate title from first message
+                if (chat.title === 'New Chat' || chat.messages.length === 0) {
+                    chat.title = message.split(' ').slice(0, 4).join(' ') + '...'
+                }
+                chat.messages.push({ role: 'user', content: message })
+                chat.messages.push({ role: 'ai', content: aiReply })
+                await chat.save()
+            }
         }
 
         res.json({ reply: aiReply })
