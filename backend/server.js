@@ -10,15 +10,16 @@ const app = express()
 
 // ── Middleware ──
 app.use(cors({
-    origin: 'http://localhost:5173', // React frontend
+    origin: ['http://localhost:5173', 'http://localhost:5174'], // React frontend
     credentials: true
 }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // ── Routes ──
-app.use('/api/auth', require('./routes/auth . routes . js'))
+app.use('/api/auth', require('./routes/auth.routes'))
 app.use('/api/chat', require('./routes/chat.routes'))
+app.use('/api/ai', require('./routes/ai.routes'))
 app.use('/api/upload', require('./routes/upload.routes'))
 app.use('/api/quiz', require('./routes/quiz.routes'))
 app.use('/api/youtube', require('./routes/youtube.routes'))

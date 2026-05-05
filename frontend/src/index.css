@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-heading: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-cream: #faf7f2;
+  --color-brand-orange: #d4500a;
+  --color-brand-dark: #12100c;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-brand-cream);
+  color: var(--color-brand-dark);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
