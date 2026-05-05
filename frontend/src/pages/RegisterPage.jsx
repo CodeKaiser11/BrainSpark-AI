@@ -23,7 +23,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] flex flex-col justify-center items-center text-[#1a1208] font-sans p-4">
+    <div className="min-h-screen bg-brand-cream flex flex-col justify-center items-center text-[#1a1208] font-sans p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm border border-[#e5e4e7]">
         <h1 className="text-3xl font-bold mb-2 text-center">Create Account</h1>
         <p className="text-center text-gray-500 mb-8">Join BrainSpark AI</p>
@@ -38,7 +38,7 @@ export default function RegisterPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-3 rounded-xl border border-[#e5e4e7] focus:outline-none focus:border-[#d4500a]"
+              className="w-full p-3 rounded-xl border border-[#e5e4e7] focus:outline-none focus:border-brand-orange"
             />
           </div>
           <div>
@@ -48,7 +48,7 @@ export default function RegisterPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 rounded-xl border border-[#e5e4e7] focus:outline-none focus:border-[#d4500a]"
+              className="w-full p-3 rounded-xl border border-[#e5e4e7] focus:outline-none focus:border-brand-orange"
             />
           </div>
           <div>
@@ -58,19 +58,19 @@ export default function RegisterPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-xl border border-[#e5e4e7] focus:outline-none focus:border-[#d4500a]"
+              className="w-full p-3 rounded-xl border border-[#e5e4e7] focus:outline-none focus:border-brand-orange"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-3 mt-4 bg-[#d4500a] text-white rounded-xl font-semibold hover:bg-orange-700 transition"
+            className="w-full py-3 mt-4 bg-brand-orange text-white rounded-xl font-semibold hover:bg-orange-700 transition"
           >
             Sign Up ✨
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm">
-          Already have an account? <Link to="/login" className="text-[#d4500a] font-medium hover:underline">Log in</Link>
+          Already have an account? <Link to="/login" className="text-brand-orange font-medium hover:underline">Log in</Link>
         </p>
       </div>
     </div>

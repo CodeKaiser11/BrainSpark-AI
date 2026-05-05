@@ -17,26 +17,36 @@ export default function SnapSolve() {
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
-      processImage(reader.result);
+      processImage(file, reader.result);
     };
     reader.readAsDataURL(file);
   };
 
-  const processImage = async (base64Image) => {
+  const processImage = async (file, base64Image) => {
     setLoading(true);
     setSolution(null);
     setError(null);
 
     try {
+      // 1. Client-side OCR
+      const Tesseract = (await import('tesseract.js')).default;
+      const result = await Tesseract.recognize(file, 'eng');
+      const extractedText = result.data.text;
+
+      if (!extractedText || extractedText.trim() === '') {
+        throw new Error("Could not extract any text from the image.");
+      }
+
+      // 2. Send to Backend
       const token = localStorage.getItem('token');
-      const res = await axios.post('/ai/solve', 
-        { imageBase64: base64Image }, 
+      const res = await axios.post('/ai/snap-solve', 
+        { problemText: extractedText }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSolution(res.data.solution);
     } catch (err) {
       console.error(err);
-      setError('Failed to process image. Please try again.');
+      setError(err.message || 'Failed to process image. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -50,8 +60,8 @@ export default function SnapSolve() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('/ai/solve', 
-        { text: text }, 
+      const res = await axios.post('/ai/snap-solve', 
+        { problemText: text }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSolution(res.data.solution);

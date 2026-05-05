@@ -1,22 +1,17 @@
-const express = require('express')
-const router = express.Router()
-const { protect } = require('../middleware/auth.middleware')
+const express = require('express');
+const router = express.Router();
+const { protect } = require('../middleware/auth.middleware');
 
-const { 
-    solveProblem,
-    generateMindMap,
-    generateNotes,
-    generateQuiz,
-    recommendVideos
-} = require('../controllers/advancedAi.controller')
+const snapController = require('../controllers/snap.controller');
+const notesController = require('../controllers/notes.controller');
+const mindmapController = require('../controllers/mindmap.controller');
+const quizController = require('../controllers/quiz.controller');
+const youtubeController = require('../controllers/youtube.controller');
 
-const multer = require('multer')
-const upload = multer({ storage: multer.memoryStorage() })
+router.post('/snap-solve', protect, snapController.solveProblem);
+router.post('/mindmap', protect, mindmapController.generateMindmap);
+router.post('/upload', protect, notesController.generateNotes);
+router.post('/quiz', protect, quizController.generateQuiz);
+router.get('/youtube', protect, youtubeController.getRecommendations);
 
-router.post('/solve', protect, solveProblem)
-router.post('/mindmap', protect, generateMindMap)
-router.post('/notes', protect, upload.single('file'), generateNotes)
-router.post('/quiz', protect, generateQuiz)
-router.post('/youtube', protect, recommendVideos)
-
-module.exports = router
+module.exports = router;

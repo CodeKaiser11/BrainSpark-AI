@@ -10,7 +10,7 @@ export default function ActivityFeed({ activities }) {
             {i !== activities.length - 1 && (
               <div className="absolute left-4 top-10 bottom-[-16px] w-px bg-gray-100"></div>
             )}
-            <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0 z-10">
+            <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 z-10">
               {activity.icon}
             </div>
             <div>

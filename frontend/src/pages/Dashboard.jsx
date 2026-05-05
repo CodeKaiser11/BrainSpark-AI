@@ -82,7 +82,7 @@ export default function Dashboard() {
         <GoalProgress />
 
         {/* Quick Ask AI */}
-        <div className="bg-gradient-to-br from-brand-orange to-orange-600 p-6 rounded-2xl shadow-md text-white">
+        <div className="bg-linear-to-br from-brand-orange to-orange-600 p-6 rounded-2xl shadow-md text-white">
           <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
             <span>✨</span> Quick Ask AI
           </h3>

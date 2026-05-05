@@ -19,7 +19,7 @@ export default function FeatureGrid({ features }) {
               <div className="text-4xl bg-gray-100 w-16 h-16 rounded-xl flex items-center justify-center grayscale">{feature.icon}</div>
               <div>
                 <h3 className="font-bold text-lg text-gray-700">{feature.name}</h3>
-                <p className="text-gray-500 text-sm text-xs mt-1 bg-gray-200 inline-block px-2 py-0.5 rounded-full">Coming Soon</p>
+                <p className="text-gray-500 text-xs mt-1 bg-gray-200 inline-block px-2 py-0.5 rounded-full">Coming Soon</p>
               </div>
             </div>
           )

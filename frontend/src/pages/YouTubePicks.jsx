@@ -17,9 +17,11 @@ export default function YouTubePicks() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('/ai/youtube', 
-        { topic, filter }, 
-        { headers: { Authorization: `Bearer ${token}` } }
+      const res = await axios.get('/ai/youtube', 
+        { 
+          params: { topic, filter },
+          headers: { Authorization: `Bearer ${token}` } 
+        }
       );
       setVideos(res.data.videos);
     } catch (err) {
