@@ -1,16 +1,65 @@
-# React + Vite
+# BrainSpark AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+BrainSpark AI is an intelligent, full-stack educational and productivity platform designed to enhance the learning experience. It provides users with a suite of AI-powered tools such as smart quizzes, automated notes generation, interactive mind maps, problem solving (SnapSolve), and curated YouTube educational picks.
 
-Currently, two official plugins are available:
+## Core Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **SnapSolve**: Quickly upload or snap images to get AI-assisted solutions to problems.
+- **Mind Maps**: Generate and interact with visual mind maps for better concept retention.
+- **Notes Generator**: Automatically generate structured study notes from various inputs.
+- **Smart Quizzes**: Take AI-generated quizzes to test your knowledge on different subjects.
+- **YouTube Picks**: Get curated educational video recommendations using the YouTube Data API.
+- **AI Chat**: An integrated intelligent chat assistant to help with queries in real-time.
+- **Dashboard & Analytics**: Track learning progress and manage your profile effectively.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend (React + Vite)
+- **Framework**: React 19, Vite, React Router
+- **Styling & UI**: Tailwind CSS 4
+- **Visualization & Flow**: `@xyflow/react` for interactive mind maps, Recharts for analytics.
+- **Data Processing**: `tesseract.js` for client-side OCR and `pdfjs-dist` for client-side PDF parsing.
 
-## Expanding the ESLint configuration
+### Backend (Node.js + Express)
+- **Framework**: Node.js, Express
+- **Database**: MongoDB (with Mongoose)
+- **Authentication**: JWT, BcryptJS
+- **Integrations**: OpenAI API for AI tools, Google APIs for YouTube integration.
+- **File Uploads**: Multer for handling file and image uploads.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+)
+- MongoDB Atlas cluster (or local instance)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd BrainSpark-AI
+   ```
+
+2. **Setup Backend:**
+   ```bash
+   cd backend
+   npm install
+   # Create a .env file and add your MongoDB URI, JWT Secret, YouTube API Key, OpenAI API Key, etc.
+   npm run dev
+   ```
+
+3. **Setup Frontend:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm run dev
+   ```
+
+4. **Access the Application:**
+   Open your browser and navigate to the frontend local server (usually `http://localhost:5173`).
+
+## Project Structure
+- `/frontend`: Client-side React application housing pages like SnapSolve, MindMaps, Dashboard, etc.
+- `/backend`: Node.js Express server with routes for auth, chat, ai, upload, quiz, and youtube integrations.
+- `.agent/`: Internal AI workflows and guidelines.
