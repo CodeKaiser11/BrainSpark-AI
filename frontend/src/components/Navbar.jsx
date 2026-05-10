@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function Navbar() {
+export default function Navbar({ isSidebarCollapsed }) {
   const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-20 bg-brand-cream/80 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex justify-between items-center ml-64">
+    <header className={`sticky top-0 z-20 bg-brand-cream/80 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex justify-between items-center transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
       <div>
         {/* Can put breadcrumbs or page title here if needed */}
       </div>
