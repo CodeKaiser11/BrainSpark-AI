@@ -17,6 +17,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-brand-cream);
   color: var(--color-brand-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background-color: #0c0a09; /* Zinc 950 */
+  color: #fafafa; /* Zinc 50 */
 }
 
 #root {
