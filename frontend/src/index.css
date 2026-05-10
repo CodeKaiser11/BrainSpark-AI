@@ -162,6 +162,15 @@ body {
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
+  --ocean-accent: #0ea5e9;
+  --sunset-accent: #f43f5e;
+
+  /* Premium SaaS Palette */
+  --midnight-navy: #020617;
+  --deep-slate: #0f172a;
+  --electric-cyan: #22d3ee;
+  --royal-purple: #818cf8;
+  --neon-glow: rgba(34, 211, 238, 0.4);
 }
 
 .glass-morphism {
@@ -171,11 +180,45 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme="dark"] .glass-morphism,
-[data-theme="midnight"] .glass-morphism,
-[data-theme="ocean"] .glass-morphism,
-[data-theme="forest"] .glass-morphism,
-[data-theme="sunset"] .glass-morphism {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* Glassmorphism 2.0 */
+.glass-2 {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03)), 
+                    linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+[data-theme="dark"] .glass-2,
+[data-theme="midnight"] .glass-2,
+[data-theme="ocean"] .glass-2,
+[data-theme="forest"] .glass-2,
+[data-theme="sunset"] .glass-2 {
+  background: rgba(15, 23, 42, 0.4);
+  background-image: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), 
+                    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(to right, var(--electric-cyan), var(--royal-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
