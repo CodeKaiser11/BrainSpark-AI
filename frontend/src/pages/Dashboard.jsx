@@ -53,19 +53,19 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+    <div className="max-w-7xl mx-auto space-y-12">
       
       {/* Main Content Area */}
-      <div className="flex-1 space-y-8">
+      <div className="space-y-8">
         
         {/* Welcome Section */}
-        <section>
-          <h1 className="text-4xl font-bold mb-2">Welcome back, {user?.name || 'Student'}! 👋</h1>
+        <section className="opacity-0 animate-fade-in-up">
+          <h1 className="text-4xl font-bold mb-2 text-brand-dark">Welcome back, {user?.name || 'Student'}! 👋</h1>
           <p className="text-gray-600 text-lg">You're on a {user?.streak || 0}-day streak 🔥 Keep it up!</p>
         </section>
 
         {/* Stats Grid */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 opacity-0 animate-fade-in-up delay-200">
           {stats.map((stat, i) => (
             <StatCard key={i} stat={stat} />
           ))}
@@ -73,36 +73,23 @@ export default function Dashboard() {
 
         {/* Study Tools */}
         <FeatureGrid features={features} />
-      </div>
 
-      {/* Right Sidebar */}
-      <aside className="w-full lg:w-80 space-y-6">
-        
-        {/* Today's Goal */}
-        <GoalProgress />
-
-        {/* Quick Ask AI */}
-        <div className="bg-linear-to-br from-brand-orange to-orange-600 p-6 rounded-2xl shadow-md text-white">
-          <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-            <span>✨</span> Quick Ask AI
-          </h3>
-          <p className="text-orange-100 text-sm mb-4">Have a quick question? Ask Gemini right here.</p>
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="E.g. What is mitosis?" 
-              className="w-full bg-white/20 border border-white/30 rounded-xl py-3 px-4 text-white placeholder-orange-200 outline-none focus:bg-white/30 transition-colors"
-            />
-            <button className="absolute right-2 top-2 bottom-2 bg-white text-brand-orange w-8 h-8 rounded-lg flex items-center justify-center font-bold hover:scale-105 transition-transform">
-              →
-            </button>
+        {/* New Bottom Section for Goals and Activity */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
+          <div className="lg:col-span-1">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <span>🎯</span> Daily Goal
+            </h3>
+            <GoalProgress />
           </div>
-        </div>
-
-        {/* Recent Activity */}
-        <ActivityFeed activities={activities} />
-
-      </aside>
+          <div className="lg:col-span-2">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <span>⚡</span> Recent Activity
+            </h3>
+            <ActivityFeed activities={activities} />
+          </div>
+        </section>
+      </div>
 
     </div>
   );

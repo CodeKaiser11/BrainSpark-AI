@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function SettingsPanel() {
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('basic');
 
   const tabs = [
@@ -104,8 +106,76 @@ export default function SettingsPanel() {
           </div>
         )}
 
-        {/* Preferences, Notifications, Appearance Mock Tabs */}
-        {['preferences', 'notifications', 'appearance'].includes(activeTab) && (
+        {/* Appearance Tab */}
+        {activeTab === 'appearance' && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Theme Selection</h3>
+              <p className="text-gray-500 mb-6">Choose a theme that matches your study style.</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { id: 'light', name: 'Cloud White', desc: 'Classic and clean', bg: '#faf7f2', accent: '#d4500a' },
+                  { id: 'dark', name: 'Dim Gray', desc: 'Easy on the eyes', bg: '#0c0a09', accent: '#ea580c' },
+                  { id: 'midnight', name: 'Midnight', desc: 'Deep space black', bg: '#000000', accent: '#6366f1' },
+                  { id: 'ocean', name: 'Deep Ocean', desc: 'Calming blue hues', bg: '#0f172a', accent: '#06b6d4' },
+                  { id: 'forest', name: 'Greenwood', desc: 'Eco-focused emerald', bg: '#061e16', accent: '#10b981' },
+                  { id: 'sunset', name: 'Twilight', desc: 'Warm sunset purple', bg: '#1a0b1e', accent: '#f43f5e' },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTheme(t.id)}
+                    className={`group relative flex flex-col items-start p-4 rounded-2xl border-2 transition-all duration-200 text-left ${
+                      theme === t.id 
+                        ? 'border-brand-orange bg-brand-orange/5 shadow-md' 
+                        : 'border-gray-100 hover:border-gray-200 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 mb-3 w-full">
+                      <div 
+                        className="w-10 h-10 rounded-full border border-gray-100 shadow-inner flex items-center justify-center overflow-hidden"
+                        style={{ backgroundColor: t.bg }}
+                      >
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: t.accent }}></div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-bold truncate">{t.name}</div>
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">{t.id}</div>
+                      </div>
+                      {theme === t.id && (
+                        <div className="text-brand-orange text-lg">✓</div>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500 leading-relaxed">{t.desc}</div>
+                    
+                    {/* Visual Preview Bars */}
+                    <div className="mt-4 flex gap-1 w-full opacity-60">
+                      <div className="h-1.5 flex-1 rounded-full" style={{ backgroundColor: t.accent }}></div>
+                      <div className="h-1.5 flex-2 rounded-full bg-gray-200"></div>
+                      <div className="h-1.5 flex-1 rounded-full bg-gray-100"></div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-8 border-t border-gray-100">
+              <h4 className="text-lg font-bold mb-4">Accessibility</h4>
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <div>
+                  <div className="font-bold">High Contrast Mode</div>
+                  <div className="text-sm text-gray-500">Enhance visibility for easier reading</div>
+                </div>
+                <div className="w-12 h-6 bg-gray-200 rounded-full relative cursor-pointer opacity-50">
+                   <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Preferences & Notifications Mock Tabs */}
+        {['preferences', 'notifications'].includes(activeTab) && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="text-6xl mb-4">⚙️</div>
             <h3 className="text-xl font-bold mb-2 capitalize">{activeTab} Settings</h3>
