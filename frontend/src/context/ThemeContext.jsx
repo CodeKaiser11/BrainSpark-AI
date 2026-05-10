@@ -5,25 +5,29 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(
-    localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    localStorage.getItem('theme') || 'light'
   );
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (theme === 'dark') {
+    // Remove old class-based approach if any
+    root.classList.remove('dark');
+    
+    // Apply theme as data attribute for CSS variable switching
+    root.setAttribute('data-theme', theme);
+    
+    // Also keep the .dark class for basic Tailwind dark mode support if needed
+    if (theme === 'dark' || theme === 'midnight' || theme === 'ocean' || theme === 'forest' || theme === 'sunset') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
+    
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
