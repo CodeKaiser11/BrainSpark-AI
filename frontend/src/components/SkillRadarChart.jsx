@@ -1,15 +1,14 @@
 import React from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { subject: 'Focus', A: 120, fullMark: 150 },
-  { subject: 'Accuracy', A: 98, fullMark: 150 },
-  { subject: 'Consistency', A: 86, fullMark: 150 },
-  { subject: 'Retention', A: 99, fullMark: 150 },
-  { subject: 'Speed', A: 85, fullMark: 150 },
-];
-
-export default function SkillRadarChart() {
+export default function SkillRadarChart({ stats }) {
+  const data = [
+    { subject: 'Focus', A: 120, fullMark: 150 },
+    { subject: 'Accuracy', A: stats ? stats.conceptMastery : 98, fullMark: 150 },
+    { subject: 'Consistency', A: 86, fullMark: 150 },
+    { subject: 'Retention', A: 99, fullMark: 150 },
+    { subject: 'Speed', A: 85, fullMark: 150 },
+  ];
   return (
     <div className="h-72 w-full flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">

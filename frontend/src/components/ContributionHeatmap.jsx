@@ -1,10 +1,15 @@
 import React from 'react';
 
-export default function ContributionHeatmap() {
+export default function ContributionHeatmap({ isLive }) {
   // Generate mock data for a 20-week period
   const weeks = 24;
   const days = 7;
   const data = Array.from({ length: weeks * days }, () => Math.floor(Math.random() * 5));
+  
+  // Make the last few squares "active" if live
+  if (isLive) {
+    data[data.length - 1] = 4;
+  }
 
   const getColor = (val) => {
     if (val === 0) return 'rgba(255, 255, 255, 0.05)';

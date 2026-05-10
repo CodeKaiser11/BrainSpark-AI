@@ -1,17 +1,8 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 
-const data = [
-  { day: 'Mon', actual: 2.5, predicted: 2.5 },
-  { day: 'Tue', actual: 3.8, predicted: 3.5 },
-  { day: 'Wed', actual: 1.5, predicted: 2.0 },
-  { day: 'Thu', actual: 4.2, predicted: 4.0 },
-  { day: 'Fri', actual: 3.0, predicted: 3.2 },
-  { day: 'Sat', actual: null, predicted: 4.8 },
-  { day: 'Sun', actual: null, predicted: 5.2 },
-];
-
-export default function PredictiveStudyChart() {
+export default function PredictiveStudyChart({ data }) {
+  if (!data || data.length === 0) return <div className="h-80 w-full animate-shimmer glass-2 rounded-3xl" />;
   return (
     <div className="h-80 w-full group">
       <ResponsiveContainer width="100%" height="100%">
